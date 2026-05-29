@@ -1,0 +1,19 @@
+{
+  "name": "@memegag/feed-sdk",
+  "version": "0.1.0",
+  "type": "module",
+  "exports": {
+    ".": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "type-check": "tsc --noEmit",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@memegag/shared-types": "*"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.0"
+  }
+}
