@@ -1,0 +1,77 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: recommendation-service
+  namespace: memegag
+  labels:
+    app: recommendation-service
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: recommendation-service
+  template:
+    metadata:
+      labels:
+        app: recommendation-service
+    spec:
+      containers:
+      - name: recommendation-service
+        image: ghcr.io/chaitanyajoshi1769/memegag-recommendation-service:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 3011
+        env:
+        - name: NODE_ENV
+          valueFrom:
+            configMapKeyRef:
+              name: memegag-config
+              key: NODE_ENV
+        - name: LOG_LEVEL
+          valueFrom:
+            configMapKeyRef:
+              name: memegag-config
+              key: LOG_LEVEL
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: memegag-secrets
+              key: DATABASE_URL
+        - name: REDIS_URL
+          valueFrom:
+            secretKeyRef:
+              name: memegag-secrets
+              key: REDIS_URL
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "500m"
+          limits:
+            memory: "1Gi"
+            cpu: "1000m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 3011
+          initialDelaySeconds: 15
+          periodSeconds: 20
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 3011
+          initialDelaySeconds: 5
+          periodSeconds: 10
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: recommendation-service
+  namespace: memegag
+spec:
+  selector:
+    app: recommendation-service
+  ports:
+  - protocol: TCP
+    port: 3011
+    targetPort: 3011
+  type: ClusterIP
