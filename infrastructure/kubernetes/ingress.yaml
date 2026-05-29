@@ -38,3 +38,31 @@ spec:
             name: search-service
             port:
               number: 3003
+      - path: /v1/creator
+        pathType: Prefix
+        backend:
+          service:
+            name: creator-service
+            port:
+              number: 3007
+      - path: /v1/media
+        pathType: Prefix
+        backend:
+          service:
+            name: media-service
+            port:
+              number: 3008
+      - path: /v1/analytics
+        pathType: Prefix
+        backend:
+          service:
+            name: analytics-service
+            port:
+              number: 3009
+      - path: /v1/livestream
+        pathType: Prefix
+        backend:
+          service:
+            name: livestream-service
+            port:
+              number: 3010

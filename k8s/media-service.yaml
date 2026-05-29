@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: media-service
+  namespace: memegag
+  labels:
+    app: media-service
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: media-service
+  template:
+    metadata:
+      labels:
+        app: media-service
+    spec:
+      containers:
+      - name: media-service
+        image: ghcr.io/chaitanyajoshi1769/memegag-media-service:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 3008
+        env:
+        - name: NODE_ENV
+          valueFrom:
+            configMapKeyRef:
+              name: memegag-config
+              key: NODE_ENV
+        - name: LOG_LEVEL
+          valueFrom:
+            configMapKeyRef:
+              name: memegag-config
+              key: LOG_LEVEL
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "500m"
+          limits:
+            memory: "1Gi"
+            cpu: "1000m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 3008
+          initialDelaySeconds: 15
+          periodSeconds: 20
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 3008
+          initialDelaySeconds: 5
+          periodSeconds: 10
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: media-service
+  namespace: memegag
+spec:
+  selector:
+    app: media-service
+  ports:
+  - protocol: TCP
+    port: 3008
+    targetPort: 3008
+  type: ClusterIP

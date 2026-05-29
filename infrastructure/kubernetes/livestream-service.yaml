@@ -1,0 +1,72 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: livestream-service
+  namespace: memegag
+  labels:
+    app: livestream-service
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: livestream-service
+  template:
+    metadata:
+      labels:
+        app: livestream-service
+    spec:
+      containers:
+      - name: livestream-service
+        image: ghcr.io/chaitanyajoshi1769/memegag-livestream-service:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 3010
+        env:
+        - name: NODE_ENV
+          valueFrom:
+            configMapKeyRef:
+              name: memegag-config
+              key: NODE_ENV
+        - name: LOG_LEVEL
+          valueFrom:
+            configMapKeyRef:
+              name: memegag-config
+              key: LOG_LEVEL
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: memegag-secrets
+              key: DATABASE_URL
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "500m"
+          limits:
+            memory: "1Gi"
+            cpu: "1000m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 3010
+          initialDelaySeconds: 15
+          periodSeconds: 20
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 3010
+          initialDelaySeconds: 5
+          periodSeconds: 10
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: livestream-service
+  namespace: memegag
+spec:
+  selector:
+    app: livestream-service
+  ports:
+  - protocol: TCP
+    port: 3010
+    targetPort: 3010
+  type: ClusterIP
