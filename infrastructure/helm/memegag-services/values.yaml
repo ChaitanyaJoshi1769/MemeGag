@@ -1,0 +1,74 @@
+replicaCount: 2
+
+image:
+  registry: ghcr.io
+  repository: chaitanyajoshi1769/memegag
+  tag: latest
+  pullPolicy: Always
+
+resources:
+  limits:
+    cpu: 1000m
+    memory: 1Gi
+  requests:
+    cpu: 500m
+    memory: 512Mi
+
+env:
+  NODE_ENV: production
+  LOG_LEVEL: info
+
+services:
+  - name: api-gateway
+    port: 3000
+  - name: feed-service
+    port: 3001
+  - name: moderation-service
+    port: 3002
+  - name: search-service
+    port: 3003
+  - name: notification-service
+    port: 3004
+  - name: realtime-service
+    port: 3005
+  - name: ai-services
+    port: 3006
+  - name: creator-service
+    port: 3007
+  - name: media-service
+    port: 3008
+  - name: analytics-service
+    port: 3009
+  - name: livestream-service
+    port: 3010
+  - name: recommendation-service
+    port: 3011
+
+ingress:
+  enabled: true
+  className: nginx
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/rate-limit: "100"
+  hosts:
+    - host: api.memegag.com
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - secretName: memegag-tls
+      hosts:
+        - api.memegag.com
+
+postgresql:
+  enabled: true
+  auth:
+    database: memegag
+    username: postgres
+    password: changeme
+
+redis:
+  enabled: true
+  auth:
+    enabled: true
+    password: changeme
