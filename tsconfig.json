@@ -1,0 +1,37 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "useDefineForClassFields": true,
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"],
+      "@ui/*": ["./packages/ui/src/*"],
+      "@auth/*": ["./packages/auth/src/*"],
+      "@database/*": ["./packages/database/src/*"],
+      "@ai-sdk/*": ["./packages/ai-sdk/src/*"],
+      "@analytics-sdk/*": ["./packages/analytics-sdk/src/*"],
+      "@config/*": ["./packages/config/src/*"],
+      "@logger/*": ["./packages/logger/src/*"],
+      "@feature-flags/*": ["./packages/feature-flags/src/*"],
+      "@shared-types/*": ["./packages/shared-types/src/*"],
+      "@websocket-sdk/*": ["./packages/websocket-sdk/src/*"],
+      "@moderation-sdk/*": ["./packages/moderation-sdk/src/*"],
+      "@feed-sdk/*": ["./packages/feed-sdk/src/*"],
+      "@recommendation-sdk/*": ["./packages/recommendation-sdk/src/*"]
+    }
+  },
+  "include": ["src", "src/**/*.ts", "src/**/*.tsx"],
+  "exclude": ["node_modules", "dist", "build", ".next"]
+}
