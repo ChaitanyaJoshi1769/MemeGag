@@ -1,0 +1,40 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: memegag-ingress
+  namespace: memegag
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/rate-limit: "100"
+    nginx.ingress.kubernetes.io/rate-limit-window: "10m"
+spec:
+  ingressClassName: nginx
+  tls:
+  - hosts:
+    - api.memegag.com
+    secretName: memegag-tls
+  rules:
+  - host: api.memegag.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: api-gateway
+            port:
+              number: 80
+      - path: /v1/feed
+        pathType: Prefix
+        backend:
+          service:
+            name: feed-service
+            port:
+              number: 3001
+      - path: /v1/search
+        pathType: Prefix
+        backend:
+          service:
+            name: search-service
+            port:
+              number: 3003
